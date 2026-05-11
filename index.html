@@ -376,7 +376,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
     <!-- Portfolio Banner -->
     <div class="port-banner">
       <div>
-        <div class="pb-lbl">PORTFOLIO (1 share)</div>
+        <div class="pb-lbl">MY PORTFOLIO VALUE</div>
         <div class="pb-val c-cy" id="pb-usd">$—</div>
         <div class="pb-thb" id="pb-thb">฿ —</div>
       </div>
@@ -438,7 +438,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
       <div class="sec-hdr"><h2>◈ MY PORTFOLIO</h2><div class="sec-line"></div></div>
       <p style="font-size:11px;color:var(--mu);margin-bottom:12px">Enter your shares and average buy price. P&L calculated from live prices.</p>
       <div class="pt-summary">
-        <div class="pt-card"><div class="pt-lbl">TOTAL VALUE</div><div class="pt-val c-cy" id="pt-total-usd">$—</div><div class="pt-sub" id="pt-total-thb">฿ —</div></div>
+      <div class="pt-card"><div class="pt-lbl">TOTAL VALUE</div><div class="pt-val c-cy" id="pt-total-usd">$—</div><div class="pt-sub" id="pt-total-thb">฿ —</div></div>
         <div class="pt-card"><div class="pt-lbl">TOTAL COST</div><div class="pt-val" id="pt-cost-usd">$—</div><div class="pt-sub" id="pt-cost-thb">฿ —</div></div>
         <div class="pt-card"><div class="pt-lbl">TOTAL P&L</div><div class="pt-val" id="pt-pl-usd">—</div><div class="pt-sub" id="pt-pl-thb"></div></div>
         <div class="pt-card"><div class="pt-lbl">RETURN %</div><div class="pt-val" id="pt-return">—</div><div class="pt-sub" id="pt-return-sub"></div></div>
@@ -780,7 +780,7 @@ async function fetchC(t){const to=Math.floor(Date.now()/1000);const from=to-30*2
 async function refreshAll(){
   document.getElementById('sp').innerHTML='<span class="spin"></span>';
   document.getElementById('mkt').textContent='···';
-  let gn=0,lo=0,topT=null,topP=0,totalUsd=0,totalChg=0;
+  let gn=0,lo=0,topT=null,topP=0;
   alertCount=0;
   const banner=document.getElementById('alert-banner');
   banner.innerHTML='';
@@ -796,7 +796,6 @@ async function refreshAll(){
         miniChart(t,null);
         if(q.dp>0)gn++;else if(q.dp<0)lo++;
         if(Math.abs(q.dp)>topP){topP=Math.abs(q.dp);topT=t;}
-        totalUsd+=q.c;totalChg+=q.d;
         checkAlerts(t,q,gPct);
         fetchC(t).then(c=>{if(c?.c)miniChart(t,c.c);}).catch(()=>{});
       }catch(e){console.warn(t,e);}
@@ -808,13 +807,31 @@ async function refreshAll(){
   document.getElementById('s-lo').textContent=lo;
   if(topT){const s=quotes[topT]?.dp>=0?'+':'';document.getElementById('s-mv').textContent=topT;document.getElementById('s-mp').textContent=`${s}${quotes[topT]?.dp?.toFixed(2)}%`;}
 
-  document.getElementById('pb-usd').textContent='$'+fmt(totalUsd);
-  document.getElementById('pb-thb').textContent='฿'+thb(totalUsd);
-  const up=totalChg>=0;const s=up?'+':'';
-  document.getElementById('pb-chg').textContent=`${s}$${fmt(totalChg)}`;
-  document.getElementById('pb-chg').className='pb-val '+(up?'c-gn':'c-rd');
-  document.getElementById('pb-chg-thb').textContent=`${s}฿${thb(Math.abs(totalChg))}`;
-  document.getElementById('pb-chg-thb').className='pb-thb '+(up?'c-gn':'c-rd');
+  // Portfolio banner — based on real holdings only
+  let totalUsd=0, totalChg=0, hasHoldings=false;
+  watchlist.forEach(t=>{
+    const shares=parseFloat(lsGet('pt_shares_'+t));
+    const q=quotes[t];
+    if(!shares||!q) return;
+    hasHoldings=true;
+    totalUsd+=shares*q.c;
+    totalChg+=shares*q.d;
+  });
+  if(hasHoldings){
+    document.getElementById('pb-usd').textContent='$'+fmt(totalUsd);
+    document.getElementById('pb-thb').textContent='฿'+thb(totalUsd);
+    const up=totalChg>=0;const s=up?'+':'';
+    document.getElementById('pb-chg').textContent=`${s}$${fmt(totalChg)}`;
+    document.getElementById('pb-chg').className='pb-val '+(up?'c-gn':'c-rd');
+    document.getElementById('pb-chg-thb').textContent=`${s}฿${thb(Math.abs(totalChg))}`;
+    document.getElementById('pb-chg-thb').className='pb-thb '+(up?'c-gn':'c-rd');
+  } else {
+    document.getElementById('pb-usd').textContent='$—';
+    document.getElementById('pb-thb').textContent='Enter shares below';
+    document.getElementById('pb-chg').textContent='—';
+    document.getElementById('pb-chg').className='pb-val';
+    document.getElementById('pb-chg-thb').textContent='';
+  }
   document.getElementById('pb-alerts').textContent=alertCount;
   banner.style.display=banner.innerHTML?'block':'none';
 
