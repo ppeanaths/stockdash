@@ -14,10 +14,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <!-- iOS PWA Icons -->
-<link rel="apple-touch-icon" sizes="512x512" href="logo.png">
-<link rel="apple-touch-icon" sizes="192x192" href="logo-192.png">
-<link rel="apple-touch-icon" href="logo.png">
-<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" sizes="512x512" href="logo-v2.png">
+<link rel="apple-touch-icon" sizes="192x192" href="logo-192-v2.png">
+<link rel="apple-touch-icon" href="logo-v2.png">
+<link rel="icon" type="image/png" href="logo-v2.png">
 
 <style>
 :root{
@@ -127,6 +127,10 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
 .conv-result-wrap{display:flex;flex-direction:column;gap:2px;justify-content:flex-end}
 .conv-stock-result{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--gn)}
 .conv-stock-sub{font-family:var(--mono);font-size:11px;color:var(--cy)}
+/* ━━━ COMPANY LOGOS ━━━ */
+.ct-left{display:flex;align-items:center;gap:7px;min-width:0}
+.co-logo{width:24px;height:24px;border-radius:6px;object-fit:contain;background:var(--s2);flex-shrink:0;padding:1px}
+.co-logo-fb{width:24px;height:24px;border-radius:6px;background:var(--s3);color:var(--mu);font-family:var(--mono);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sort-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
 .sort-lbl{font-family:var(--mono);font-size:9px;color:var(--mu);letter-spacing:.07em;margin-right:2px}
 .sort-btn{background:var(--s2);border:1px solid var(--br2);border-radius:6px;color:var(--mu);font-family:var(--mono);font-size:9px;padding:5px 10px;cursor:pointer;transition:all .15s;white-space:nowrap}
@@ -540,12 +544,12 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
     <div class="bn-item" onclick="scrollToEl('notesgrid')">📝<span class="bn-lbl">NOTES</span></div>
   </div>
 
-  <div class="footer">STOCK TERMINAL v4 &nbsp;·&nbsp; Finnhub &nbsp;·&nbsp; Not financial advice.</div>
+  <div class="footer">STOCK TERMINAL v4 &nbsp;·&nbsp; Yahoo Finance &nbsp;·&nbsp; Not financial advice.</div>
 </div>
 
 <script>
 // ━━━ CONFIG ━━━
-const FINNHUB_KEY = 'd80nvjpr01qt5k5vl9c0d80nvjpr01qt5k5vl9cg';
+const FINNHUB_KEY = 'd80s83pr01qt5k603ubgd80s83pr01qt5k603uc0';
 const CORRECT_PIN = '110900';
 const DEFAULT_WATCHLIST = ['QQQI','VOO','NVDA','AMD','ASML','TSM','AAPL','MSFT','GOOGL','TSLA','IREN','PLTR','ONDS','TTWO','NAT'];
 const DASH_TITLE = 'My Stock Terminal';
@@ -750,6 +754,23 @@ function buildSkeleton(){
     <div class="sum-card"><div class="sum-lbl">TOP MOVER</div><div class="sum-val c-am" id="s-mv">-</div><div class="sum-sub" id="s-mp"></div></div>`;
 }
 
+// ━━━ COMPANY LOGO DOMAINS ━━━
+const LOGO_DOMAIN={
+  NVDA:'nvidia.com',AMD:'amd.com',ASML:'asml.com',TSM:'tsmc.com',
+  AAPL:'apple.com',MSFT:'microsoft.com',GOOGL:'google.com',TSLA:'tesla.com',
+  META:'meta.com',AMZN:'amazon.com',NFLX:'netflix.com',INTC:'intel.com',
+  IREN:'iren.com',PLTR:'palantir.com',ONDS:'ondas.com',TTWO:'take2games.com',
+  NAT:'nordicamericantankers.com',QQQI:'neos.investments',VOO:'vanguard.com',
+  COIN:'coinbase.com',MSTR:'microstrategy.com',ARM:'arm.com',
+  QCOM:'qualcomm.com',MU:'micron.com',AVGO:'broadcom.com',BABA:'alibaba.com'
+};
+
+function logoURL(t){
+  const d=LOGO_DOMAIN[t];
+  if(!d) return '';
+  return `https://logo.clearbit.com/${d}`;
+}
+
 function cardHTML(t,q){
   const name=NAMES[t]||t;const h=HINTS[t];
   let pr,ch,bdg,dir;
@@ -764,9 +785,19 @@ function cardHTML(t,q){
   const thbLine=q?`<div class="pr-thb">฿${thb(q.c)}</div>`:'';
   const htag=h?`<span class="htag ${HCLS[h.t]}">${HLBL[h.t]||h.t}</span>`:'';
   const emCls=editMode?' edit-mode':'';
+  const logo=logoURL(t);
+  const logoHTML=logo
+    ?`<img class="co-logo" src="${logo}" alt="${t}" onerror="this.style.display='none'">`
+    :`<div class="co-logo-fb">${t.slice(0,2)}</div>`;
   return `<div class="card ${dir} fi${emCls}" id="card-${t}" onclick="openDetail('${t}')">
     <div class="card-del" onclick="deleteStock('${t}',event)">✕</div>
-    <div class="ct"><div><div class="tk">${t}</div><div class="cn">${name}</div></div>${bdg}</div>
+    <div class="ct">
+      <div class="ct-left">
+        ${logoHTML}
+        <div><div class="tk">${t}</div><div class="cn">${name}</div></div>
+      </div>
+      ${bdg}
+    </div>
     <div class="pr-row">${pr}${ch}</div>${thbLine}
     <canvas class="mini" id="mini-${t}"></canvas>
     <div class="card-note">${htag}<div style="margin-top:2px">${h?h.s:'-'}</div></div>
@@ -774,8 +805,52 @@ function cardHTML(t,q){
 }
 
 // ━━━ FETCH ━━━
-async function fetchQ(t){const r=await fetch(`https://finnhub.io/api/v1/quote?symbol=${t}&token=${FINNHUB_KEY}`);if(!r.ok)throw new Error(r.status);return r.json();}
-async function fetchC(t){const to=Math.floor(Date.now()/1000);const from=to-30*24*3600;const r=await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${t}&resolution=D&from=${from}&to=${to}&token=${FINNHUB_KEY}`);return r.json();}
+// ━━━ FETCH — Yahoo Finance (no API key needed, works from browser) ━━━
+const YF_PROXY = 'https://query1.finance.yahoo.com/v8/finance/chart/';
+const YF_PROXY2 = 'https://query2.finance.yahoo.com/v8/finance/chart/';
+
+async function fetchQ(t){
+  // Yahoo Finance quote via chart endpoint (1d interval, 1 day range)
+  const url = `${YF_PROXY}${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com&.tsrc=finance`;
+  try {
+    const r = await fetch(url, {headers:{'Accept':'application/json'}});
+    if(!r.ok) throw new Error(r.status);
+    const d = await r.json();
+    const meta = d?.chart?.result?.[0]?.meta;
+    if(!meta) throw new Error('no meta');
+    const c = meta.regularMarketPrice || 0;
+    const pc = meta.previousClose || meta.chartPreviousClose || 0;
+    const diff = c - pc;
+    const dp = pc ? (diff/pc)*100 : 0;
+    return {c, d:diff, dp, o:meta.regularMarketOpen||c, h:meta.regularMarketDayHigh||c, l:meta.regularMarketDayLow||c, pc};
+  } catch(e) {
+    // fallback to query2
+    const r2 = await fetch(`${YF_PROXY2}${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com`);
+    if(!r2.ok) throw new Error(r2.status);
+    const d2 = await r2.json();
+    const meta = d2?.chart?.result?.[0]?.meta;
+    if(!meta) throw new Error('no data');
+    const c = meta.regularMarketPrice || 0;
+    const pc = meta.previousClose || meta.chartPreviousClose || 0;
+    const diff = c - pc;
+    const dp = pc ? (diff/pc)*100 : 0;
+    return {c, d:diff, dp, o:meta.regularMarketOpen||c, h:meta.regularMarketDayHigh||c, l:meta.regularMarketDayLow||c, pc};
+  }
+}
+
+async function fetchC(t){
+  // Yahoo Finance 30-day daily candles
+  const url = `${YF_PROXY}${t}?interval=1d&range=1mo&corsDomain=finance.yahoo.com&.tsrc=finance`;
+  try {
+    const r = await fetch(url, {headers:{'Accept':'application/json'}});
+    const d = await r.json();
+    const result = d?.chart?.result?.[0];
+    if(!result) return null;
+    const closes = result.indicators?.quote?.[0]?.close || [];
+    const timestamps = result.timestamp || [];
+    return {c: closes, t: timestamps};
+  } catch(e) { return null; }
+}
 
 async function refreshAll(){
   document.getElementById('sp').innerHTML='<span class="spin"></span>';
