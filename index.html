@@ -129,8 +129,8 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
 .conv-stock-sub{font-family:var(--mono);font-size:11px;color:var(--cy)}
 /* ━━━ COMPANY LOGOS ━━━ */
 .ct-left{display:flex;align-items:center;gap:7px;min-width:0}
-.co-logo{width:24px;height:24px;border-radius:6px;object-fit:contain;background:var(--s2);flex-shrink:0;padding:1px}
-.co-logo-fb{width:24px;height:24px;border-radius:6px;background:var(--s3);color:var(--mu);font-family:var(--mono);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.co-logo{width:26px;height:26px;border-radius:6px;object-fit:contain;background:var(--s2);flex-shrink:0;padding:3px}
+.co-logo-fb{width:26px;height:26px;border-radius:6px;font-family:var(--mono);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;letter-spacing:0}
 .sort-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
 .sort-lbl{font-family:var(--mono);font-size:9px;color:var(--mu);letter-spacing:.07em;margin-right:2px}
 .sort-btn{background:var(--s2);border:1px solid var(--br2);border-radius:6px;color:var(--mu);font-family:var(--mono);font-size:9px;padding:5px 10px;cursor:pointer;transition:all .15s;white-space:nowrap}
@@ -762,13 +762,32 @@ const LOGO_DOMAIN={
   IREN:'iren.com',PLTR:'palantir.com',ONDS:'ondas.com',TTWO:'take2games.com',
   NAT:'nordicamericantankers.com',QQQI:'neos.investments',VOO:'vanguard.com',
   COIN:'coinbase.com',MSTR:'microstrategy.com',ARM:'arm.com',
-  QCOM:'qualcomm.com',MU:'micron.com',AVGO:'broadcom.com',BABA:'alibaba.com'
+  QCOM:'qualcomm.com',MU:'micron.com',AVGO:'broadcom.com',BABA:'alibaba.com',
+  SMCI:'supermicro.com'
 };
 
-function logoURL(t){
-  const d=LOGO_DOMAIN[t];
-  if(!d) return '';
-  return `https://logo.clearbit.com/${d}`;
+// Brand colors for fallback initials badge
+const LOGO_COLOR={
+  NVDA:'#76b900',AMD:'#ed1c24',ASML:'#007ac2',TSM:'#006bae',
+  AAPL:'#555',MSFT:'#00a4ef',GOOGL:'#4285f4',TSLA:'#cc0000',
+  META:'#0866ff',AMZN:'#ff9900',NFLX:'#e50914',INTC:'#0071c5',
+  IREN:'#3fb950',PLTR:'#7b68ee',ONDS:'#f5a623',TTWO:'#003087',
+  NAT:'#003087',QQQI:'#1a1a2e',VOO:'#c8102e',
+  COIN:'#1652f0',MSTR:'#f7931a',ARM:'#0091bd',QCOM:'#3253dc'
+};
+
+function logoHTML(t){
+  const domain = LOGO_DOMAIN[t];
+  const color = LOGO_COLOR[t] || '#30363d';
+  const initials = t.slice(0,2);
+  const fallback = `<div class="co-logo-fb" style="background:${color}22;border:1px solid ${color}55;color:${color}">${initials}</div>`;
+
+  if(!domain) return fallback;
+
+  // Use Google's S2 favicon service — very reliable, no CORS issues
+  const src = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+  return `<img class="co-logo" src="${src}" alt="${t}"
+    onerror="this.outerHTML='${fallback.replace(/'/g,'&apos;').replace(/"/g,'&quot;')}'">`;
 }
 
 function cardHTML(t,q){
@@ -785,15 +804,11 @@ function cardHTML(t,q){
   const thbLine=q?`<div class="pr-thb">฿${thb(q.c)}</div>`:'';
   const htag=h?`<span class="htag ${HCLS[h.t]}">${HLBL[h.t]||h.t}</span>`:'';
   const emCls=editMode?' edit-mode':'';
-  const logo=logoURL(t);
-  const logoHTML=logo
-    ?`<img class="co-logo" src="${logo}" alt="${t}" onerror="this.style.display='none'">`
-    :`<div class="co-logo-fb">${t.slice(0,2)}</div>`;
   return `<div class="card ${dir} fi${emCls}" id="card-${t}" onclick="openDetail('${t}')">
     <div class="card-del" onclick="deleteStock('${t}',event)">✕</div>
     <div class="ct">
       <div class="ct-left">
-        ${logoHTML}
+        ${logoHTML(t)}
         <div><div class="tk">${t}</div><div class="cn">${name}</div></div>
       </div>
       ${bdg}
