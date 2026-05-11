@@ -13,9 +13,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
-<!-- iOS PWA Icons (inline SVG as data URI) -->
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='120' fill='%23070b0f'/%3E%3Ctext x='256' y='320' font-size='280' text-anchor='middle' fill='%233fb950' font-family='monospace' font-weight='700'%3E◈%3C/text%3E%3Ctext x='256' y='420' font-size='72' text-anchor='middle' fill='%237d8590' font-family='monospace'%3ESTK%3C/text%3E%3C/svg%3E">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b0f'/%3E%3Ctext x='32' y='46' font-size='38' text-anchor='middle' fill='%233fb950' font-family='monospace' font-weight='700'%3E◈%3C/text%3E%3C/svg%3E">
+<!-- iOS PWA Icons -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='110' fill='%230d1117'/%3E%3Cpolygon points='256,80 400,256 256,432 112,256' fill='none' stroke='%233fb950' stroke-width='28' stroke-linejoin='round'/%3E%3Cpolygon points='256,150 360,256 256,362 152,256' fill='%233fb950' opacity='0.18'/%3E%3Ccircle cx='256' cy='256' r='28' fill='%23ffffff'/%3E%3Ctext x='256' y='490' font-size='64' text-anchor='middle' fill='%237d8590' font-family='monospace' letter-spacing='8'%3ESTK%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230d1117'/%3E%3Cpolygon points='32,8 54,32 32,56 10,32' fill='none' stroke='%233fb950' stroke-width='3.5' stroke-linejoin='round'/%3E%3Ccircle cx='32' cy='32' r='4' fill='%23ffffff'/%3E%3C/svg%3E">
 
 <style>
 :root{
@@ -103,7 +103,33 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
 .sec-hdr h2{font-family:var(--mono);font-size:9px;color:var(--mu);letter-spacing:.1em;white-space:nowrap}
 .sec-line{flex:1;height:1px;background:var(--br2)}
 
-/* ━━━ ADD STOCK BAR ━━━ */
+/* ━━━ CURRENCY CONVERTER ━━━ */
+.conv-section{background:var(--s1);border:1px solid var(--br2);border-radius:10px;padding:14px;margin-top:14px}
+.conv-rate-row{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px}
+.conv-rate-card{background:var(--s2);border-radius:8px;padding:8px 10px;text-align:center}
+.conv-rate-lbl{font-family:var(--mono);font-size:8px;color:var(--mu);letter-spacing:.06em;margin-bottom:4px}
+.conv-rate-val{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--am)}
+.conv-box{background:var(--s2);border:1px solid var(--br2);border-radius:8px;padding:12px;margin-bottom:10px}
+.conv-row{display:flex;align-items:flex-end;gap:8px}
+.conv-inp-wrap{display:flex;flex-direction:column;gap:4px}
+.conv-lbl{font-family:var(--mono);font-size:8px;color:var(--mu);letter-spacing:.06em}
+.conv-inp{background:var(--s1);border:1px solid var(--br);border-radius:6px;color:var(--tx);font-family:var(--mono);font-size:14px;padding:9px 10px;outline:none;transition:border-color .2s;width:120px}
+.conv-inp:focus{border-color:var(--ac)}
+.conv-sel{background:var(--s1);border:1px solid var(--br);border-radius:6px;color:var(--tx);font-family:var(--mono);font-size:12px;padding:9px 8px;outline:none;cursor:pointer;width:110px}
+.conv-sel:focus{border-color:var(--ac)}
+.conv-swap{background:var(--s3);border:1px solid var(--br);border-radius:6px;color:var(--ac);font-size:16px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s}
+.conv-swap:active{background:var(--s2)}
+.conv-result{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--cy);margin-top:12px}
+.conv-result-sub{font-family:var(--mono);font-size:11px;color:var(--mu);margin-top:3px}
+.conv-stock-hdr{font-family:var(--mono);font-size:9px;color:var(--mu);letter-spacing:.08em;margin:12px 0 8px;border-top:1px solid var(--br2);padding-top:12px}
+.conv-result-wrap{display:flex;flex-direction:column;gap:2px;justify-content:flex-end}
+.conv-stock-result{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--gn)}
+.conv-stock-sub{font-family:var(--mono);font-size:11px;color:var(--cy)}
+.sort-bar{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.sort-lbl{font-family:var(--mono);font-size:9px;color:var(--mu);letter-spacing:.07em;margin-right:2px}
+.sort-btn{background:var(--s2);border:1px solid var(--br2);border-radius:6px;color:var(--mu);font-family:var(--mono);font-size:9px;padding:5px 10px;cursor:pointer;transition:all .15s;white-space:nowrap}
+.sort-btn:active{background:var(--s3)}
+.sort-btn.active{background:var(--gn-d);border-color:var(--gn-b);color:var(--gn)}
 .add-bar{display:flex;gap:8px;margin-bottom:14px;align-items:center}
 .add-inp{flex:1;background:var(--s1);border:1px solid var(--br);border-radius:8px;color:var(--tx);font-family:var(--mono);font-size:13px;padding:10px 14px;outline:none;transition:border-color .2s;text-transform:uppercase}
 .add-inp::placeholder{text-transform:none;color:var(--mu2);font-size:12px}
@@ -265,14 +291,18 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
 <div id="lock">
   <!-- Logo -->
   <div class="lock-logo">
-    <svg viewBox="0 0 72 72" xmlns="http://www.w3.org/2000/svg">
-      <rect width="72" height="72" rx="18" fill="#0d1117"/>
-      <rect width="72" height="72" rx="18" fill="none" stroke="#30363d" stroke-width="1"/>
-      <text x="36" y="46" font-size="34" text-anchor="middle" fill="#3fb950" font-family="monospace" font-weight="700">◈</text>
-      <text x="36" y="60" font-size="9" text-anchor="middle" fill="#7d8590" font-family="monospace" letter-spacing="2">STK</text>
+    <svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" width="96" height="96">
+      <rect width="96" height="96" rx="22" fill="#0d1117"/>
+      <rect width="96" height="96" rx="22" fill="none" stroke="#30363d" stroke-width="1"/>
+      <!-- outer diamond stroke -->
+      <polygon points="48,10 84,48 48,86 12,48" fill="none" stroke="#3fb950" stroke-width="4" stroke-linejoin="round"/>
+      <!-- inner diamond fill -->
+      <polygon points="48,24 72,48 48,72 24,48" fill="#3fb950" opacity="0.15"/>
+      <!-- center dot -->
+      <circle cx="48" cy="48" r="7" fill="#ffffff"/>
     </svg>
     <div class="lock-logo-title">STOCK TERMINAL</div>
-    <div class="lock-logo-sub">Private Dashboard</div>
+    <div class="lock-logo-sub">Private Dashboard • Enter PIN</div>
   </div>
 
   <!-- PIN dots -->
@@ -302,7 +332,7 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
   </div>
 
   <div class="lock-err" id="lock-err"></div>
-  <div class="lock-hint" id="lock-hint">Enter your 6-digit PIN</div>
+  <div class="lock-hint" id="lock-hint">Enter your 6-digit PIN • Auto-locks after 5 min idle</div>
 </div>
 
 <!-- ━━━ APP ━━━ -->
@@ -312,14 +342,17 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
   <div class="topbar">
     <div class="tl">
       <svg class="logo-mark" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-        <rect width="32" height="32" rx="8" fill="#0d1117"/>
-        <text x="16" y="22" font-size="18" text-anchor="middle" fill="#3fb950" font-family="monospace" font-weight="700">◈</text>
+        <rect width="32" height="32" rx="7" fill="#0d1117"/>
+        <polygon points="16,4 28,16 16,28 4,16" fill="none" stroke="#3fb950" stroke-width="2.2" stroke-linejoin="round"/>
+        <polygon points="16,10 22,16 16,22 10,16" fill="#3fb950" opacity="0.2"/>
+        <circle cx="16" cy="16" r="2.8" fill="#ffffff"/>
       </svg>
       <div class="logo-text">STK<span>/TERM</span></div>
       <div class="mkt-pill" id="mkt">···</div>
     </div>
     <div class="tr">
       <span class="upd" id="upd"></span>
+      <span class="upd" id="countdown" style="color:var(--mu2)"></span>
       <button class="icon-btn btn-refresh-lbl" onclick="refreshAll()"><span id="sp"></span>↻</button>
       <button class="icon-btn" onclick="toggleEdit()" id="edit-btn" title="Edit watchlist">✏️</button>
       <button class="icon-btn" onclick="lockOut()" title="Lock">🔒</button>
@@ -377,6 +410,16 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
     <!-- Detail Panel -->
     <div class="detail" id="detail"></div>
 
+    <!-- Sort Bar -->
+    <div class="sort-bar">
+      <span class="sort-lbl">SORT:</span>
+      <button class="sort-btn active" id="sort-default" onclick="setSort('default')">DEFAULT</button>
+      <button class="sort-btn" id="sort-gain" onclick="setSort('gain')">▲ GAIN%</button>
+      <button class="sort-btn" id="sort-loss" onclick="setSort('loss')">▼ LOSS%</button>
+      <button class="sort-btn" id="sort-price" onclick="setSort('price')">$ PRICE</button>
+      <button class="sort-btn" id="sort-az" onclick="setSort('az')">A–Z</button>
+    </div>
+
     <!-- Add Stock Bar -->
     <div class="sec-hdr"><h2>◈ WATCHLIST</h2><div class="sec-line"></div></div>
     <div class="add-bar">
@@ -387,20 +430,6 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
 
     <!-- Stock Sections -->
     <div id="sections"></div>
-
-    <!-- Alert Settings -->
-    <div class="alert-section">
-      <div class="sec-hdr"><h2>◈ PRICE ALERTS</h2><div class="sec-line"></div></div>
-      <p style="font-size:11px;color:var(--mu);margin-bottom:6px">Set price targets — triggered on every refresh.</p>
-      <div class="pct-global">
-        <label>⚡ Alert if any stock moves more than</label>
-        <input class="pct-inp" id="global-pct" type="number" min="1" max="99" placeholder="5">
-        <label>% today</label>
-      </div>
-      <div class="alert-grid" id="alert-grid"></div>
-      <button class="btn-save" onclick="saveAlerts()">SAVE ALL ALERTS</button>
-      <div class="save-ok" id="save-ok">✓ Saved!</div>
-    </div>
 
     <!-- Portfolio Tracker -->
     <div class="port-tracker">
@@ -428,13 +457,83 @@ body{background:var(--bg);color:var(--tx);font-family:var(--sans);min-height:100
       <div class="notes-grid" id="notesgrid"></div>
     </div>
 
+    <!-- Currency Converter -->
+    <div class="conv-section" id="conv-section">
+      <div class="sec-hdr"><h2>◈ CURRENCY CONVERTER</h2><div class="sec-line"></div></div>
+      <p style="font-size:11px;color:var(--mu);margin-bottom:12px">Convert between USD, THB, and your stock prices. Rates update with every refresh.</p>
+      <div class="conv-rate-row">
+        <div class="conv-rate-card"><div class="conv-rate-lbl">USD → THB</div><div class="conv-rate-val" id="cv-usd-thb">—</div></div>
+        <div class="conv-rate-card"><div class="conv-rate-lbl">THB → USD</div><div class="conv-rate-val" id="cv-thb-usd">—</div></div>
+        <div class="conv-rate-card"><div class="conv-rate-lbl">LAST UPDATE</div><div class="conv-rate-val" id="cv-updated">—</div></div>
+      </div>
+      <div class="conv-box">
+        <div class="conv-row">
+          <div class="conv-inp-wrap">
+            <label class="conv-lbl">AMOUNT</label>
+            <input class="conv-inp" id="cv-amount" type="number" placeholder="100" oninput="runConvert()">
+          </div>
+          <div class="conv-inp-wrap">
+            <label class="conv-lbl">FROM</label>
+            <select class="conv-sel" id="cv-from" onchange="runConvert()">
+              <option value="USD">🇺🇸 USD</option>
+              <option value="THB">🇹🇭 THB</option>
+            </select>
+          </div>
+          <button class="conv-swap" onclick="swapConv()" title="Swap">⇄</button>
+          <div class="conv-inp-wrap">
+            <label class="conv-lbl">TO</label>
+            <select class="conv-sel" id="cv-to" onchange="runConvert()">
+              <option value="THB">🇹🇭 THB</option>
+              <option value="USD">🇺🇸 USD</option>
+            </select>
+          </div>
+        </div>
+        <div class="conv-result" id="cv-result">Enter an amount above</div>
+        <div class="conv-result-sub" id="cv-result-sub"></div>
+      </div>
+
+      <!-- Stock price converter -->
+      <div class="conv-stock-hdr">Convert a stock price</div>
+      <div class="conv-row" style="flex-wrap:wrap;gap:8px">
+        <div class="conv-inp-wrap">
+          <label class="conv-lbl">TICKER</label>
+          <select class="conv-sel" id="cv-ticker" onchange="runStockConvert()" style="width:100px">
+            <option value="">Select</option>
+          </select>
+        </div>
+        <div class="conv-inp-wrap">
+          <label class="conv-lbl">SHARES</label>
+          <input class="conv-inp" id="cv-shares" type="number" placeholder="1" value="1" oninput="runStockConvert()" style="width:70px">
+        </div>
+        <div class="conv-result-wrap">
+          <div class="conv-lbl">VALUE</div>
+          <div class="conv-stock-result" id="cv-stock-usd">—</div>
+          <div class="conv-stock-sub" id="cv-stock-thb">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Price Alerts (moved to bottom) -->
+    <div class="alert-section">
+      <div class="sec-hdr"><h2>◈ PRICE ALERTS</h2><div class="sec-line"></div></div>
+      <p style="font-size:11px;color:var(--mu);margin-bottom:6px">Set price targets — triggered on every refresh.</p>
+      <div class="pct-global">
+        <label>⚡ Alert if any stock moves more than</label>
+        <input class="pct-inp" id="global-pct" type="number" min="1" max="99" placeholder="5">
+        <label>% today</label>
+      </div>
+      <div class="alert-grid" id="alert-grid"></div>
+      <button class="btn-save" onclick="saveAlerts()">SAVE ALL ALERTS</button>
+      <div class="save-ok" id="save-ok">✓ Saved!</div>
+    </div>
+
   </div>
 
   <!-- Bottom Nav -->
   <div class="bottom-nav">
     <div class="bn-item active" onclick="scrollTo(0,0)">📊<span class="bn-lbl">DASH</span></div>
     <div class="bn-item" onclick="scrollToEl('pt-grid')">💰<span class="bn-lbl">PORT</span></div>
-    <div class="bn-item" onclick="scrollToEl('alert-grid')">🔔<span class="bn-lbl">ALERTS</span></div>
+    <div class="bn-item" onclick="scrollToEl('conv-section')">💱<span class="bn-lbl">FX</span></div>
     <div class="bn-item" onclick="scrollToEl('hints')">💡<span class="bn-lbl">HINTS</span></div>
     <div class="bn-item" onclick="scrollToEl('notesgrid')">📝<span class="bn-lbl">NOTES</span></div>
   </div>
@@ -451,7 +550,7 @@ const DASH_TITLE = 'My Stock Terminal';
 
 // ━━━ STATIC DATA ━━━
 const NAMES={NVDA:'NVIDIA Corp',AMD:'Advanced Micro Devices',ASML:'ASML Holding',TSM:'Taiwan Semiconductor',AAPL:'Apple Inc',MSFT:'Microsoft Corp',GOOGL:'Alphabet Inc',TSLA:'Tesla Inc',IREN:'IREN Limited',PLTR:'Palantir Technologies',ONDS:'Ondas Holdings',TTWO:'Take-Two Interactive',NAT:'Nordic American Tankers',QQQI:'Nasdaq-100 High Income ETF',VOO:'Vanguard S&P 500 ETF',META:'Meta Platforms',AMZN:'Amazon.com',NFLX:'Netflix',INTC:'Intel Corp',BABA:'Alibaba Group',COIN:'Coinbase',MSTR:'MicroStrategy',SMCI:'Super Micro Computer',ARM:'Arm Holdings',QCOM:'Qualcomm',MU:'Micron Technology',AVGO:'Broadcom Inc'};
-const HINTS={NVDA:{t:'hold',s:'Core AI leader. Near 52-wk high. $40B+ AI equity deals.'},AMD:{t:'watch',s:'Q1 blowout, data center +57%. New ATH. Wait for pullback.'},ASML:{t:'hold',s:'Only EUV supplier. AI capex tailwind. Strong buy consensus.'},TSM:{t:'hold',s:'Revenue +17.5% YoY. NVDA ramping H200 orders here.'},AAPL:{t:'hold',s:'Steady. Chip partnership news in focus. Defensive play.'},MSFT:{t:'hold',s:'Minor pullback. AI cloud continues. Watch $410 support.'},GOOGL:{t:'hold',s:'Above $400. Broad AI tailwinds intact. Solid position.'},TSLA:{t:'watch',s:'Recall resolved via OTA. Momentum up but volatile.'},IREN:{t:'buy',s:'$3.4B NVDA AI cloud deal + $2.1B investment option.'},PLTR:{t:'hold',s:'Beat Q1 EPS. Valuation stretched. Hold — avoid chasing.'},ONDS:{t:'watch',s:'Small cap AI+defense. PLTR partnership. Speculative.'},TTWO:{t:'hold',s:'GTA VI is the key catalyst. Hold for launch cycle.'},NAT:{t:'hold',s:'Dividend income play. Oil tanker rates = main driver.'},QQQI:{t:'hold',s:'Strong buy consensus. Options income on Nasdaq-100.'},VOO:{t:'hold',s:'Broad market ETF. Lowest cost (0.03%). Core hold.'},META:{t:'hold',s:'AI-driven ad revenue growth. Reality Labs drag. Hold.'},AMZN:{t:'hold',s:'AWS dominance + AI infra. Strong free cash flow.'},NFLX:{t:'hold',s:'Subscriber growth + ad tier momentum. Hold.'}};
+const HINTS={NVDA:{t:'hold',s:'Core AI leader. Near 52-wk high. $40B+ AI equity deals.'},AMD:{t:'watch',s:'Q1 blowout, data center +57%. New ATH. Wait for pullback.'},ASML:{t:'hold',s:'Only EUV supplier. AI capex tailwind. Strong buy consensus.'},TSM:{t:'hold',s:'Revenue +17.5% YoY. NVDA ramping H200 orders here.'},AAPL:{t:'hold',s:'Steady. Chip partnership news in focus. Defensive play.'},MSFT:{t:'hold',s:'Minor pullback. AI cloud continues. Watch $410 support.'},GOOGL:{t:'hold',s:'Above $400. Broad AI tailwinds intact. Solid position.'},TSLA:{t:'watch',s:'Recall resolved via OTA. Momentum up but volatile.'},IREN:{t:'buy',s:'$3.4B NVDA AI cloud deal + $2.1B investment option.'},PLTR:{t:'hold',s:'Beat Q1 EPS. Valuation stretched. Hold - avoid chasing.'},ONDS:{t:'watch',s:'Small cap AI+defense. PLTR partnership. Speculative.'},TTWO:{t:'hold',s:'GTA VI is the key catalyst. Hold for launch cycle.'},NAT:{t:'hold',s:'Dividend income play. Oil tanker rates = main driver.'},QQQI:{t:'hold',s:'Strong buy consensus. Options income on Nasdaq-100.'},VOO:{t:'hold',s:'Broad market ETF. Lowest cost (0.03%). Core hold.'},META:{t:'hold',s:'AI-driven ad revenue growth. Reality Labs drag. Hold.'},AMZN:{t:'hold',s:'AWS dominance + AI infra. Strong free cash flow.'},NFLX:{t:'hold',s:'Subscriber growth + ad tier momentum. Hold.'}};
 const HICO={buy:'🔥',hold:'✅',watch:'⚠️',caution:'🚫'};
 const HLBL={buy:'ADD',hold:'HOLD',watch:'WATCH',caution:'CAUTION'};
 const HCLS={buy:'h-buy',hold:'h-hold',watch:'h-watch',caution:'h-caut'};
@@ -495,6 +594,8 @@ function checkPin(){
   }
 }
 function lockOut(){
+  stopAutoRefresh();
+  clearTimeout(idleTimer);
   localStorage.removeItem('unlocked');
   pinEntry='';updateDots();
   document.getElementById('lock-err').textContent='';
@@ -517,6 +618,8 @@ function showApp(){
   watchlist=loadWatchlist();
   buildAll();
   fetchRate().then(()=>refreshAll());
+  startAutoRefresh();
+  resetIdleTimer();
   showIosBanner();
 }
 
@@ -585,37 +688,64 @@ async function fetchRate(){
     const d=await r.json();
     if(d.rates?.THB){usdThb=d.rates.THB;document.getElementById('pb-rate').textContent=usdThb.toFixed(2);document.getElementById('pb-rate-sub').textContent='1 USD = '+usdThb.toFixed(2)+' THB';}
   }catch(e){document.getElementById('pb-rate').textContent=usdThb.toFixed(2);document.getElementById('pb-rate-sub').textContent='≈'+usdThb+' THB (est.)';}
+  updateConverterRates();
 }
 function thb(usd){return (usd*usdThb).toLocaleString('th-TH',{minimumFractionDigits:0,maximumFractionDigits:0});}
 
+// ━━━ SORT ━━━
+let currentSort = 'default';
+
+function setSort(s){
+  currentSort = s;
+  document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('sort-'+s)?.classList.add('active');
+  buildSkeleton();
+}
+
+function getSortedWatchlist(){
+  const list = [...watchlist];
+  if(currentSort==='default') return list;
+  if(currentSort==='az') return list.sort((a,b)=>a.localeCompare(b));
+  if(currentSort==='price') return list.sort((a,b)=>(quotes[b]?.c||0)-(quotes[a]?.c||0));
+  if(currentSort==='gain') return list.sort((a,b)=>(quotes[b]?.dp||0)-(quotes[a]?.dp||0));
+  if(currentSort==='loss') return list.sort((a,b)=>(quotes[a]?.dp||0)-(quotes[b]?.dp||0));
+  return list;
+}
+
 // ━━━ BUILD SKELETON ━━━
 function buildSkeleton(){
+  const sorted=getSortedWatchlist();
   let html='';
-  // Group known tickers, rest go ungrouped
-  const groups={Semiconductors:['NVDA','AMD','ASML','TSM'],ETFs:['QQQI','VOO'],'Big Tech':['AAPL','MSFT','GOOGL','TSLA','META','AMZN','NFLX'],'High Conviction':['IREN','PLTR','ONDS','TTWO','NAT']};
-  const placed=new Set();
-  for(const [g,tks] of Object.entries(groups)){
-    const matched=tks.filter(t=>watchlist.includes(t));
-    if(matched.length){
-      html+=`<div class="sec-hdr"><h2>◈ ${g}</h2><div class="sec-line"></div></div><div class="grid">`;
-      matched.forEach(t=>{html+=cardHTML(t,quotes[t]||null);placed.add(t);});
+  if(currentSort!=='default'){
+    html+=`<div class="grid">`;
+    sorted.forEach(t=>{html+=cardHTML(t,quotes[t]||null);});
+    html+=`</div>`;
+  } else {
+    const groups={Semiconductors:['NVDA','AMD','ASML','TSM'],ETFs:['QQQI','VOO'],'Big Tech':['AAPL','MSFT','GOOGL','TSLA','META','AMZN','NFLX'],'High Conviction':['IREN','PLTR','ONDS','TTWO','NAT']};
+    const placed=new Set();
+    for(const [g,tks] of Object.entries(groups)){
+      const matched=tks.filter(t=>watchlist.includes(t));
+      if(matched.length){
+        html+=`<div class="sec-hdr"><h2>◈ ${g}</h2><div class="sec-line"></div></div><div class="grid">`;
+        matched.forEach(t=>{html+=cardHTML(t,quotes[t]||null);placed.add(t);});
+        html+=`</div>`;
+      }
+    }
+    const rest=watchlist.filter(t=>!placed.has(t));
+    if(rest.length){
+      html+=`<div class="sec-hdr"><h2>◈ WATCHLIST</h2><div class="sec-line"></div></div><div class="grid">`;
+      rest.forEach(t=>{html+=cardHTML(t,quotes[t]||null);});
       html+=`</div>`;
     }
-  }
-  const rest=watchlist.filter(t=>!placed.has(t));
-  if(rest.length){
-    html+=`<div class="sec-hdr"><h2>◈ WATCHLIST</h2><div class="sec-line"></div></div><div class="grid">`;
-    rest.forEach(t=>{html+=cardHTML(t,quotes[t]||null);});
-    html+=`</div>`;
   }
   document.getElementById('sections').innerHTML=html;
   if(editMode)document.querySelectorAll('.card').forEach(c=>c.classList.add('edit-mode'));
 
   document.getElementById('sumrow').innerHTML=`
     <div class="sum-card"><div class="sum-lbl">TRACKING</div><div class="sum-val c-cy">${watchlist.length}</div><div class="sum-sub">stocks</div></div>
-    <div class="sum-card"><div class="sum-lbl">GAINERS</div><div class="sum-val c-gn" id="s-gn">—</div><div class="sum-sub">up today</div></div>
-    <div class="sum-card"><div class="sum-lbl">LOSERS</div><div class="sum-val c-rd" id="s-lo">—</div><div class="sum-sub">down today</div></div>
-    <div class="sum-card"><div class="sum-lbl">TOP MOVER</div><div class="sum-val c-am" id="s-mv">—</div><div class="sum-sub" id="s-mp"></div></div>`;
+    <div class="sum-card"><div class="sum-lbl">GAINERS</div><div class="sum-val c-gn" id="s-gn">-</div><div class="sum-sub">up today</div></div>
+    <div class="sum-card"><div class="sum-lbl">LOSERS</div><div class="sum-val c-rd" id="s-lo">-</div><div class="sum-sub">down today</div></div>
+    <div class="sum-card"><div class="sum-lbl">TOP MOVER</div><div class="sum-val c-am" id="s-mv">-</div><div class="sum-sub" id="s-mp"></div></div>`;
 }
 
 function cardHTML(t,q){
@@ -637,7 +767,7 @@ function cardHTML(t,q){
     <div class="ct"><div><div class="tk">${t}</div><div class="cn">${name}</div></div>${bdg}</div>
     <div class="pr-row">${pr}${ch}</div>${thbLine}
     <canvas class="mini" id="mini-${t}"></canvas>
-    <div class="card-note">${htag}<div style="margin-top:2px">${h?h.s:'—'}</div></div>
+    <div class="card-note">${htag}<div style="margin-top:2px">${h?h.s:'-'}</div></div>
   </div>`;
 }
 
@@ -695,6 +825,7 @@ async function refreshAll(){
   document.getElementById('upd').textContent=now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   document.getElementById('sp').innerHTML='';
   buildPortfolio();
+  updateConverterRates();
 }
 
 function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
@@ -704,9 +835,9 @@ function checkAlerts(t,q,gPct){
   const banner=document.getElementById('alert-banner');
   const lo=parseFloat(lsGet('al_lo_'+t));
   const hi=parseFloat(lsGet('al_hi_'+t));
-  if(lo&&q.c<=lo){alertCount++;banner.innerHTML+=`<div class="al-item al-dn fi"><span class="al-ico">📉</span><span class="al-txt">${t} $${fmt(q.c)} — below $${fmt(lo)}</span><button class="al-x" onclick="this.parentElement.remove()">✕</button></div>`;document.getElementById('card-'+t)?.classList.add('alerting');}
-  if(hi&&q.c>=hi){alertCount++;banner.innerHTML+=`<div class="al-item al-up fi"><span class="al-ico">📈</span><span class="al-txt">${t} $${fmt(q.c)} — above $${fmt(hi)}</span><button class="al-x" onclick="this.parentElement.remove()">✕</button></div>`;document.getElementById('card-'+t)?.classList.add('alerting');}
-  if(Math.abs(q.dp)>=gPct){alertCount++;const s=q.dp>=0?'+':'';banner.innerHTML+=`<div class="al-item al-pct fi"><span class="al-ico">⚡</span><span class="al-txt">${t} ${s}${q.dp.toFixed(2)}% — exceeds ${gPct}%</span><button class="al-x" onclick="this.parentElement.remove()">✕</button></div>`;}
+  if(lo&&q.c<=lo){alertCount++;banner.innerHTML+=`<div class="al-item al-dn fi"><span class="al-ico">📉</span><span class="al-txt">${t} $${fmt(q.c)} - below $${fmt(lo)}</span><button class="al-x" onclick="this.parentElement.remove()">✕</button></div>`;document.getElementById('card-'+t)?.classList.add('alerting');}
+  if(hi&&q.c>=hi){alertCount++;banner.innerHTML+=`<div class="al-item al-up fi"><span class="al-ico">📈</span><span class="al-txt">${t} $${fmt(q.c)} - above $${fmt(hi)}</span><button class="al-x" onclick="this.parentElement.remove()">✕</button></div>`;document.getElementById('card-'+t)?.classList.add('alerting');}
+  if(Math.abs(q.dp)>=gPct){alertCount++;const s=q.dp>=0?'+':'';banner.innerHTML+=`<div class="al-item al-pct fi"><span class="al-ico">⚡</span><span class="al-txt">${t} ${s}${q.dp.toFixed(2)}% - exceeds ${gPct}%</span><button class="al-x" onclick="this.parentElement.remove()">✕</button></div>`;}
 }
 
 // ━━━ MINI CHART ━━━
@@ -765,8 +896,8 @@ function buildAlertGrid(){
   document.getElementById('global-pct').value=lsGet('alert_global_pct')||'5';
   document.getElementById('alert-grid').innerHTML=watchlist.map(t=>`
     <div class="ac"><div class="ac-lbl">◈ ${t}</div>
-      <div class="ac-row"><label>📉 Below $</label><input class="ac-inp" id="alo-${t}" type="number" placeholder="—" value="${lsGet('al_lo_'+t)||''}"></div>
-      <div class="ac-row"><label>📈 Above $</label><input class="ac-inp" id="ahi-${t}" type="number" placeholder="—" value="${lsGet('al_hi_'+t)||''}"></div>
+      <div class="ac-row"><label>📉 Below $</label><input class="ac-inp" id="alo-${t}" type="number" placeholder="-" value="${lsGet('al_lo_'+t)||''}"></div>
+      <div class="ac-row"><label>📈 Above $</label><input class="ac-inp" id="ahi-${t}" type="number" placeholder="-" value="${lsGet('al_hi_'+t)||''}"></div>
     </div>`).join('');
 }
 function saveAlerts(){
@@ -784,7 +915,7 @@ function saveAlerts(){
 
 // ━━━ HINTS ━━━
 function buildHints(){
-  document.getElementById('hints').innerHTML=watchlist.filter(t=>HINTS[t]).map(t=>{const h=HINTS[t];return `<div class="hint-row"><div class="h-ico">${HICO[h.t]}</div><div><div class="h-ttl"><span class="htag ${HCLS[h.t]}">${HLBL[h.t]}</span>&nbsp; ${t} — ${NAMES[t]||t}</div><div class="h-txt">${h.s}</div></div></div>`;}).join('');
+  document.getElementById('hints').innerHTML=watchlist.filter(t=>HINTS[t]).map(t=>{const h=HINTS[t];return `<div class="hint-row"><div class="h-ico">${HICO[h.t]}</div><div><div class="h-ttl"><span class="htag ${HCLS[h.t]}">${HLBL[h.t]}</span>&nbsp; ${t} - ${NAMES[t]||t}</div><div class="h-txt">${h.s}</div></div></div>`;}).join('');
 }
 
 // ━━━ NOTES ━━━
@@ -883,17 +1014,17 @@ function calcPortfolio(){
 
   document.getElementById('pt-total-usd').textContent='$'+fmt(totalVal);
   document.getElementById('pt-total-thb').textContent='฿'+thb(totalVal);
-  document.getElementById('pt-cost-usd').textContent=totalCost>0?'$'+fmt(totalCost):'—';
+  document.getElementById('pt-cost-usd').textContent=totalCost>0?'$'+fmt(totalCost):'-';
   document.getElementById('pt-cost-thb').textContent=totalCost>0?'฿'+thb(totalCost):'enter avg price';
 
   const plEl=document.getElementById('pt-pl-usd');
-  plEl.textContent=totalCost>0?`${s}$${fmt(pl)}`:'—';
+  plEl.textContent=totalCost>0?`${s}$${fmt(pl)}`:'-';
   plEl.className='pt-val '+(up?'c-gn':'c-rd');
   document.getElementById('pt-pl-thb').textContent=totalCost>0?`${s}฿${thb(Math.abs(pl))}`:'';
   document.getElementById('pt-pl-thb').className='pt-sub '+(up?'c-gn':'c-rd');
 
   const retEl=document.getElementById('pt-return');
-  retEl.textContent=totalCost>0?`${s}${ret.toFixed(2)}%`:'—';
+  retEl.textContent=totalCost>0?`${s}${ret.toFixed(2)}%`:'-';
   retEl.className='pt-val '+(up?'c-gn':'c-rd');
   document.getElementById('pt-return-sub').textContent=totalCost>0?(up?'profit 🎉':'loss 📉'):'enter avg buy prices';
 
@@ -904,10 +1035,151 @@ function calcPortfolio(){
   document.getElementById('pt-total-usd').closest('.pt-summary')?.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
+// ━━━ CURRENCY CONVERTER ━━━
+function updateConverterRates(){
+  const r = usdThb;
+  const el1 = document.getElementById('cv-usd-thb');
+  const el2 = document.getElementById('cv-thb-usd');
+  const el3 = document.getElementById('cv-updated');
+  if(el1) el1.textContent = r.toFixed(2) + ' ฿';
+  if(el2) el2.textContent = (1/r).toFixed(4) + ' $';
+  if(el3) el3.textContent = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+
+  // populate stock ticker dropdown
+  const sel = document.getElementById('cv-ticker');
+  if(sel && watchlist.length){
+    sel.innerHTML = '<option value="">Select</option>' +
+      watchlist.map(t=>`<option value="${t}">${t}</option>`).join('');
+  }
+  runConvert();
+  runStockConvert();
+}
+
+function runConvert(){
+  const amount = parseFloat(document.getElementById('cv-amount')?.value);
+  const from = document.getElementById('cv-from')?.value;
+  const to = document.getElementById('cv-to')?.value;
+  const res = document.getElementById('cv-result');
+  const sub = document.getElementById('cv-result-sub');
+  if(!res) return;
+  if(!amount || isNaN(amount)){ res.textContent='Enter an amount above'; sub.textContent=''; return; }
+
+  let result;
+  if(from === 'USD' && to === 'THB') result = amount * usdThb;
+  else if(from === 'THB' && to === 'USD') result = amount / usdThb;
+  else result = amount;
+
+  const fromSym = from==='USD'?'$':'฿';
+  const toSym = to==='USD'?'$':'฿';
+  const toLocale = to==='THB'?'th-TH':'en-US';
+  res.textContent = toSym + result.toLocaleString(toLocale,{minimumFractionDigits:2,maximumFractionDigits:2});
+  sub.textContent = `${fromSym}${amount.toLocaleString()} ${from} = ${toSym}${result.toLocaleString(toLocale,{minimumFractionDigits:2,maximumFractionDigits:2})} ${to}`;
+}
+
+function swapConv(){
+  const from = document.getElementById('cv-from');
+  const to = document.getElementById('cv-to');
+  if(!from||!to) return;
+  const tmp = from.value;
+  from.value = to.value;
+  to.value = tmp;
+  runConvert();
+}
+
+function runStockConvert(){
+  const t = document.getElementById('cv-ticker')?.value;
+  const shares = parseFloat(document.getElementById('cv-shares')?.value)||1;
+  const usdEl = document.getElementById('cv-stock-usd');
+  const thbEl = document.getElementById('cv-stock-thb');
+  if(!usdEl||!thbEl) return;
+  if(!t||!quotes[t]){ usdEl.textContent='-'; thbEl.textContent='Select a ticker'; return; }
+  const price = quotes[t].c;
+  const totalUsd = price * shares;
+  const totalThb = totalUsd * usdThb;
+  usdEl.textContent = '$' + fmt(totalUsd);
+  thbEl.textContent = '฿' + totalThb.toLocaleString('th-TH',{minimumFractionDigits:0,maximumFractionDigits:0});
+}
+
+// ━━━ AUTO-LOCK & AUTO-REFRESH ━━━
+const AUTO_LOCK_MS = 5 * 60 * 1000;   // lock after 5 min idle
+const AUTO_REFRESH_MS = 60 * 1000;    // refresh every 1 min
+
+let idleTimer = null;
+let refreshTimer = null;
+
+function resetIdleTimer(){
+  clearTimeout(idleTimer);
+  idleTimer = setTimeout(()=>{
+    if(document.getElementById('app').style.display !== 'none'){
+      lockOut();
+    }
+  }, AUTO_LOCK_MS);
+}
+
+let countdownTimer = null;
+let countdownSec = 60;
+
+function startAutoRefresh(){
+  clearInterval(refreshTimer);
+  clearInterval(countdownTimer);
+  countdownSec = 60;
+
+  refreshTimer = setInterval(()=>{
+    refreshAll();
+    countdownSec = 60;
+  }, AUTO_REFRESH_MS);
+
+  countdownTimer = setInterval(()=>{
+    countdownSec--;
+    const el = document.getElementById('countdown');
+    if(el) el.textContent = `↻ ${countdownSec}s`;
+    if(countdownSec <= 0) countdownSec = 60;
+  }, 1000);
+}
+
+function stopAutoRefresh(){
+  clearInterval(refreshTimer);
+  clearInterval(countdownTimer);
+  const el = document.getElementById('countdown');
+  if(el) el.textContent = '';
+}
+
+// Track user activity to reset idle timer
+['touchstart','touchend','click','keydown','scroll','mousemove'].forEach(ev=>{
+  document.addEventListener(ev, resetIdleTimer, {passive:true});
+});
+
+// Lock immediately when user switches away from the app (iOS tab switch, home button)
+document.addEventListener('visibilitychange',()=>{
+  if(document.hidden){
+    // page hidden - lock and stop refresh
+    stopAutoRefresh();
+    clearTimeout(idleTimer);
+    if(document.getElementById('app').style.display !== 'none'){
+      lockOut();
+    }
+  } else {
+    // page visible again - lock screen already shown, user must re-enter PIN
+    // if already on lock screen, do nothing
+  }
+});
+
+// Also lock on iOS when app goes to background via pagehide
+window.addEventListener('pagehide',()=>{
+  stopAutoRefresh();
+  if(document.getElementById('app').style.display !== 'none'){
+    lockOut();
+  }
+});
+
 // ━━━ BOOT ━━━
 window.addEventListener('DOMContentLoaded',()=>{
-  if(lsGet('unlocked')==='1'){showApp();}
-  // else lock screen is already visible
+  // Always start locked - never auto-login from localStorage for safety
+  // (user must enter PIN every time they open the app)
+  pinEntry='';
+  updateDots();
+  document.getElementById('lock').style.display='flex';
+  document.getElementById('app').style.display='none';
 });
 </script>
 </body>
