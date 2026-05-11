@@ -805,51 +805,87 @@ function cardHTML(t,q){
 }
 
 // ━━━ FETCH ━━━
-// ━━━ FETCH — Yahoo Finance (no API key needed, works from browser) ━━━
-const YF_PROXY = 'https://query1.finance.yahoo.com/v8/finance/chart/';
-const YF_PROXY2 = 'https://query2.finance.yahoo.com/v8/finance/chart/';
+// ━━━ FETCH — Multi-source with fallback ━━━
+// Source 1: Yahoo Finance via allorigins CORS proxy
+// Source 2: Yahoo Finance query2
+// Source 3: Direct Yahoo Finance
 
 async function fetchQ(t){
-  // Yahoo Finance quote via chart endpoint (1d interval, 1 day range)
-  const url = `${YF_PROXY}${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com&.tsrc=finance`;
-  try {
-    const r = await fetch(url, {headers:{'Accept':'application/json'}});
-    if(!r.ok) throw new Error(r.status);
-    const d = await r.json();
-    const meta = d?.chart?.result?.[0]?.meta;
-    if(!meta) throw new Error('no meta');
-    const c = meta.regularMarketPrice || 0;
-    const pc = meta.previousClose || meta.chartPreviousClose || 0;
-    const diff = c - pc;
-    const dp = pc ? (diff/pc)*100 : 0;
-    return {c, d:diff, dp, o:meta.regularMarketOpen||c, h:meta.regularMarketDayHigh||c, l:meta.regularMarketDayLow||c, pc};
-  } catch(e) {
-    // fallback to query2
-    const r2 = await fetch(`${YF_PROXY2}${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com`);
-    if(!r2.ok) throw new Error(r2.status);
-    const d2 = await r2.json();
-    const meta = d2?.chart?.result?.[0]?.meta;
-    if(!meta) throw new Error('no data');
-    const c = meta.regularMarketPrice || 0;
-    const pc = meta.previousClose || meta.chartPreviousClose || 0;
-    const diff = c - pc;
-    const dp = pc ? (diff/pc)*100 : 0;
-    return {c, d:diff, dp, o:meta.regularMarketOpen||c, h:meta.regularMarketDayHigh||c, l:meta.regularMarketDayLow||c, pc};
+  const sources = [
+    // Yahoo via CORS proxy (works from GitHub Pages)
+    ()=>fetchYahooProxy(t),
+    // Yahoo direct query2
+    ()=>fetchYahooDirect(t),
+  ];
+  for(const src of sources){
+    try{
+      const q = await src();
+      if(q && q.c > 0) return q;
+    }catch(e){ console.warn(t, 'source failed:', e.message); }
   }
+  throw new Error('All sources failed for '+t);
+}
+
+async function fetchYahooProxy(t){
+  const yurl = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d`);
+  const r = await fetch(`https://api.allorigins.win/get?url=${yurl}`, {signal: AbortSignal.timeout(8000)});
+  const data = await r.json();
+  const j = JSON.parse(data.contents);
+  return parseYahoo(j);
+}
+
+async function fetchYahooDirect(t){
+  const r = await fetch(
+    `https://query2.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com`,
+    {headers:{'Accept':'application/json'}, signal: AbortSignal.timeout(8000)}
+  );
+  const j = await r.json();
+  return parseYahoo(j);
+}
+
+function parseYahoo(j){
+  const meta = j?.chart?.result?.[0]?.meta;
+  if(!meta || !meta.regularMarketPrice) throw new Error('no price data');
+  const c = meta.regularMarketPrice;
+  const pc = meta.previousClose || meta.chartPreviousClose || c;
+  const diff = c - pc;
+  const dp = pc ? (diff/pc)*100 : 0;
+  return {
+    c,
+    d: diff,
+    dp,
+    o: meta.regularMarketOpen || c,
+    h: meta.regularMarketDayHigh || c,
+    l: meta.regularMarketDayLow || c,
+    pc
+  };
 }
 
 async function fetchC(t){
-  // Yahoo Finance 30-day daily candles
-  const url = `${YF_PROXY}${t}?interval=1d&range=1mo&corsDomain=finance.yahoo.com&.tsrc=finance`;
-  try {
-    const r = await fetch(url, {headers:{'Accept':'application/json'}});
-    const d = await r.json();
-    const result = d?.chart?.result?.[0];
+  try{
+    const yurl = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1mo`);
+    const r = await fetch(`https://api.allorigins.win/get?url=${yurl}`, {signal: AbortSignal.timeout(8000)});
+    const data = await r.json();
+    const j = JSON.parse(data.contents);
+    const result = j?.chart?.result?.[0];
     if(!result) return null;
-    const closes = result.indicators?.quote?.[0]?.close || [];
+    const closes = result.indicators?.quote?.[0]?.close?.filter(Boolean) || [];
     const timestamps = result.timestamp || [];
     return {c: closes, t: timestamps};
-  } catch(e) { return null; }
+  }catch(e){
+    try{
+      const r2 = await fetch(
+        `https://query2.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1mo&corsDomain=finance.yahoo.com`,
+        {signal: AbortSignal.timeout(8000)}
+      );
+      const j = await r2.json();
+      const result = j?.chart?.result?.[0];
+      if(!result) return null;
+      const closes = result.indicators?.quote?.[0]?.close?.filter(Boolean) || [];
+      const timestamps = result.timestamp || [];
+      return {c: closes, t: timestamps};
+    }catch(e2){ return null; }
+  }
 }
 
 async function refreshAll(){
