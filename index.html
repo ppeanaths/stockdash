@@ -828,7 +828,7 @@ async function fetchQ(t){
 
 async function fetchYahooProxy(t){
   const yurl = encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d`);
-  const r = await fetch(`https://api.allorigins.win/get?url=${yurl}`, {signal: AbortSignal.timeout(8000)});
+  const r = await fetch(`https://api.allorigins.win/get?url=${yurl}`, {signal: AbortSignal.timeout(12000)});
   const data = await r.json();
   const j = JSON.parse(data.contents);
   return parseYahoo(j);
@@ -837,7 +837,7 @@ async function fetchYahooProxy(t){
 async function fetchYahooDirect(t){
   const r = await fetch(
     `https://query2.finance.yahoo.com/v8/finance/chart/${t}?interval=1d&range=1d&corsDomain=finance.yahoo.com`,
-    {headers:{'Accept':'application/json'}, signal: AbortSignal.timeout(8000)}
+    {headers:{'Accept':'application/json'}, signal: AbortSignal.timeout(12000)}
   );
   const j = await r.json();
   return parseYahoo(j);
@@ -897,8 +897,8 @@ async function refreshAll(){
   banner.innerHTML='';
   const gPct=parseFloat(lsGet('alert_global_pct'))||5;
 
-  for(let i=0;i<watchlist.length;i+=5){
-    const batch=watchlist.slice(i,i+5);
+  for(let i=0;i<watchlist.length;i+=3){
+    const batch=watchlist.slice(i,i+3);
     await Promise.all(batch.map(async t=>{
       try{
         const q=await fetchQ(t);quotes[t]=q;
@@ -911,7 +911,7 @@ async function refreshAll(){
         fetchC(t).then(c=>{if(c?.c)miniChart(t,c.c);}).catch(()=>{});
       }catch(e){console.warn(t,e);}
     }));
-    if(i+5<watchlist.length)await sleep(250);
+    if(i+3<watchlist.length)await sleep(500);
   }
 
   document.getElementById('s-gn').textContent=gn;
